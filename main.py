@@ -14,10 +14,10 @@ def read_file_in_dir(directory):
     return docs
 
 
-listofzeros = [0] * 1000
-listofOnes = [1] * 1000
+list_of_zeros = [0] * 1000
+list_of_ones = [1] * 1000
 
-y_data = listofOnes + listofzeros
+y_data = list_of_ones + list_of_zeros
 
 neg_docs = read_file_in_dir("neg/")
 pos_docs = read_file_in_dir("pos/")
@@ -32,10 +32,8 @@ tfs = Tfidf_Vectorizer.fit_transform(x_train).astype('float64')
 # Create a svm Classifier
 clf = svm.SVC(kernel='linear') # Linear Kernel
 
-
 # Train the model using the training sets
 clf.fit(tfs, y_train)
-
 
 # Predict the response for test dataset
 tfs = Tfidf_Vectorizer.transform(x_test).astype('float64')
@@ -45,20 +43,3 @@ print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
 #tfs = Tfidf_Vectorizer.transform(["Iam very Sad"]).astype('float64')
 #print(clf.predict(tfs))
-
-
-import pylab as pl
-
-print(tfs)
-
-
-for i in range(0, tfs.shape[0]):
-    if y_test[i] == 1:
-       # print(tfs[i,2])
-        c1 = pl.scatter(tfs[i, 0], tfs[i, 1], c='r', marker='+')
-    elif y_test[i] == 0:
-        c2 = pl.scatter(tfs[i, 0], tfs[i, 1], c='g', marker='o')
-
-pl.title('Iris training dataset with 3 classes and    known outcomes')
-pl.show()
-
