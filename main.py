@@ -1,15 +1,7 @@
-from sklearn import neighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
-import pandas as pd
 import os
-
-from helpers import apply_cross_validation_and_evaluate
-
-
-def remove_stopping_words(data):
-   # filtered_data = [word for word in data if word not in stopwords.words('english')]
-    return data
+from sklearn import svm, metrics
 
 
 def read_file_in_dir(directory):
@@ -18,7 +10,7 @@ def read_file_in_dir(directory):
         for entry in entries:
             file = open(directory + "/"  + entry.name, 'r')
             data = file.read().replace("\n", "")
-            docs.append(remove_stopping_words(data))
+            docs.append(data)
     return docs
 
 
@@ -36,19 +28,37 @@ x_train, x_test, y_train, y_test = train_test_split(all_docs, y_data)
 Tfidf_Vectorizer = TfidfVectorizer(use_idf=True, stop_words='english')
 tfs = Tfidf_Vectorizer.fit_transform(x_train).astype('float64')
 
-df_idf = pd.DataFrame(tfs[0].T.todense(), index=Tfidf_Vectorizer.vocabulary_,columns=["idf_weights"])
-df_idf.sort_values(by=['idf_weights'] , ascending=False)
 
-print(tfs.shape)
-x_data = tfs.reshape((tfs.shape[0], tfs.shape[1], tfs.shape[1] ,1))
-print(x_data.shape)
+# Create a svm Classifier
+clf = svm.SVC(kernel='linear') # Linear Kernel
 
-#x_train = tfs.reshape(tfs.shape[0], tfs.shape[1],1)
-#Input(batch_shape=(None, tf_len, 1))
-'''
-print(tfs.shape)
 
-x_data = np.array(tfs)
+# Train the model using the training sets
+clf.fit(tfs, y_train)
 
-print(x_data[0][0])
-'''
+
+# Predict the response for test dataset
+tfs = Tfidf_Vectorizer.transform(x_test).astype('float64')
+y_pred = clf.predict(tfs)
+
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+
+#tfs = Tfidf_Vectorizer.transform(["Iam very Sad"]).astype('float64')
+#print(clf.predict(tfs))
+
+
+import pylab as pl
+
+print(tfs)
+
+
+for i in range(0, tfs.shape[0]):
+    if y_test[i] == 1:
+       # print(tfs[i,2])
+        c1 = pl.scatter(tfs[i, 0], tfs[i, 1], c='r', marker='+')
+    elif y_test[i] == 0:
+        c2 = pl.scatter(tfs[i, 0], tfs[i, 1], c='g', marker='o')
+
+pl.title('Iris training dataset with 3 classes and    known outcomes')
+pl.show()
+

@@ -1,7 +1,7 @@
 from sklearn.model_selection import KFold
-from tensorflow.python.keras import datasets, layers, models, optimizers
+from tensorflow.python.keras import datasets, layers, models, optimizers,Input
 import matplotlib.pyplot as plt
-
+import keras
 from numpy import mean
 
 
@@ -41,7 +41,7 @@ def create_sequential_model(n):
         # this layer summarize the presence of features in an input image
         # results the down sampled feature maps to be the input for next layer
         # each feature map contain the precise position of features in the input image.
-        model.add(layers.Conv2D(23, (3, 3), activation="relu", input_shape=(28, 28, 1)))
+        model.add(layers.Conv1D(23, (3, 3), activation="relu", input_shape=(1500, 34933)))
 
         # add pooling layer after the convolution layer
         # pooling layer create a new set of the same number of pooled feature maps.
