@@ -2,7 +2,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 import os
 from sklearn import svm, metrics
-import pandas as pd
 
 def read_file_in_dir(directory):
     docs = []
@@ -14,10 +13,10 @@ def read_file_in_dir(directory):
     return docs
 
 
-listofzeros = [0] * 1000
-listofOnes = [1] * 1000
+list_of_zeros = [0] * 1000
+list_of_ones = [1] * 1000
 
-y_data = listofOnes + listofzeros
+y_data = list_of_ones + list_of_zeros
 
 neg_docs = read_file_in_dir("neg/")
 pos_docs = read_file_in_dir("pos/")
